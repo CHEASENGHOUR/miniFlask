@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div class="container bg-secondary-subtle mt-2 p-2 rounded-4">
+        <h1 class="text-center alert text-dark-emphasis">Python Flask CRUD Application</h1>
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <!-- content -->
+            <div class="col-sm-8">
+                <h2>User List <button class="btn btn-primary pull-right float-end" data-bs-toggle="modal" data-bs-target="#Modal">Add Users</button></h2>
+                {% with messages = get_digit %}
+                {% if messages %}
+                {% for  message in messages %}  
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    {{message}}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <div id="Modal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add New Users</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ url_for('Insert') }}" method="POST">
+                                    <div class="form-group">
+                                        <label for="Name" class="ms-2">Full Name</label> 
+                                        <input type="text" name="name" class=" form-control mt-2" id="Name" placeholder="Enter FullName">
+                                        <label for="Email" class="ms-2">Email</label> 
+                                        <input type="text" name="email" class=" form-control mt-2" id="Email" placeholder="Enter Email">
+                                        <label for="ID" class="ms-2">ID</label> 
+                                        <input type="number" name="ID" class=" form-control mt-2" id="ID" placeholder="Enter ID">
+                                        <button type="submit" class="btn btn-success mt-5">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white">
+                    <table class="table table-hover bg-black">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div class="overflow-y-scroll mb-1 rounded-2" style="height: 500px;">
+                        <table class="table table-hover bg-black w-100" >
+                            <tbody>
+                                <tr>
+                                    {% for row in users %}
+                                    <td scope="col">{{row.0}}</td>
+                                    <td scope="col">{{row.1}}</td>
+                                    <td scope="col">{{row.2}}</td>
+                                    <td scope="col" >
+                                        <a href="/update/{{ row.0 }}" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modaledit{{ row.0 }}">Edit</a>
+                                        <a href="/delete/{{ row.0 }}" onclick="return confirm('Are you sure ?')" class="btn btn-danger btn-sm">Delete</a>
+                                    </td>
+                                </tr>
+
+                                <div id="modaledit{{ row.0 }}" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Update Users</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{{ url_for('Update') }}" method="POST">
+                                                    <div class="form-group">
+                                                        <input value="{{ row.0 }}" type="hidden" name="ID" id="ID">
+                                                        <label for="Name" class="ms-2">Full Name</label> 
+                                                        <input value="{{ row.1 }}" type="text" name="name" class=" form-control mt-2" id="Name" placeholder="Enter FullName">
+                                                        <label for="Email" class="ms-2">Email</label> 
+                                                        <input value="{{ row.2 }}" type="text" name="email" class=" form-control mt-2" id="Email" placeholder="Enter Email">
+                                                        <button type="submit" class="btn btn-success mt-5">Update</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+</body>
+</html>
